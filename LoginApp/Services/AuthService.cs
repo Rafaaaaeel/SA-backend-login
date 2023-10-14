@@ -21,14 +21,10 @@ namespace LoginApp.Services
 
         public async Task<AuthResponse<User>> Register(RegisterDto request)
         {
-            // var isUserAlreadyInUse = _db.User.FirstOrDefaultAsync(u => u.Email == request.Email);
+            var isUserAlreadyInUse = await _db.User.FirstOrDefaultAsync(u => u.Email == request.Email);
 
-            // if (isUserAlreadyInUse != null) 
-            // {
-            //     Console.WriteLine("Ja existe");
-            //     return new AuthResponse<User>();
-            // }
-
+            if (isUserAlreadyInUse != null) return new AuthResponse<User>();
+    
             var user = _mapper.Map<User>(request);
 
             user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password); 
