@@ -1,5 +1,5 @@
 using LoginApp.Models;
-using LoginApp.Models.Dtos;
+using LoginApp.Dtos;
 using LoginApp.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,11 +18,29 @@ namespace LoginApp.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<User>> Register(UserDto request)
+        public async Task<ActionResult> Register(RegisterDto request)
         {
-            await _service.Register(request);
-            
-            return Ok();
+            var response = await _service.Register(request);
+
+            if (response.Data == null)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
+        }
+
+        [HttpPost("login")]
+        public async Task<ActionResult> Login(LoginDto request)
+        {
+            var response = await _service.Login(request);
+
+            if (response.Data == null)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
         }
 
     }
