@@ -37,7 +37,7 @@ namespace LoginApp.Controllers
 
             if (response.Data == null)
             {
-                return BadRequest();
+                return NotFound();
             }
 
             return NoContent();

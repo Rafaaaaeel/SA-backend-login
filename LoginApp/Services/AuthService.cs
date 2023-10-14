@@ -40,11 +40,12 @@ namespace LoginApp.Services
         {
             var user = await _db.User.FirstOrDefaultAsync(u => u.Email == request.Email);
 
-            if (user == null && user?.Email != request.Email && !BCrypt.Net.BCrypt.Verify(request.Password, user?.PasswordHash))
-            {
-                return new AuthResponse<User>();
-            }
+            if (user == null) return new AuthResponse<User>();
 
+            if (user.Email != request.Email) return new AuthResponse<User>();
+
+            if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash)) return new AuthResponse<User>();
+            
             return new AuthResponse<User>() { Data = user };
         }
 
