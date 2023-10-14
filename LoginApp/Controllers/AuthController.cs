@@ -1,4 +1,3 @@
-using LoginApp.Models;
 using LoginApp.Dtos;
 using LoginApp.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +10,7 @@ namespace LoginApp.Controllers
     {
 
         private readonly IAuthService _service;
+
 
         public AuthController(IAuthService service)
         {
@@ -31,7 +31,7 @@ namespace LoginApp.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult> Login(LoginDto request)
+        public async Task<ActionResult<string>> Login(LoginDto request)
         {
             var response = await _service.Login(request);
 
@@ -40,7 +40,7 @@ namespace LoginApp.Controllers
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok(response.Token);
         }
 
     }
