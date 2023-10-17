@@ -1,4 +1,6 @@
+using System.IdentityModel.Tokens.Jwt;
 using LoginApp.Dtos;
+using LoginApp.Models;
 using LoginApp.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,9 +10,7 @@ namespace LoginApp.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-
         private readonly IAuthService _service;
-
 
         public AuthController(IAuthService service)
         {
@@ -42,6 +42,22 @@ namespace LoginApp.Controllers
 
             return Ok(response.Token);
         }
+
+        [HttpPost("token")]
+        public ActionResult<RefreshTokenDto> ValidateToken(SessionToken token)
+        {
+            var response = _service.RefreshToken(token);
+
+            if (response == null) return BadRequest();
+
+            if (response.Error == true) 
+            {
+                return StatusCode(410);
+            }
+
+            return Ok(response.Data);
+        }
+
 
     }
 }

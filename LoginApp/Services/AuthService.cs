@@ -47,14 +47,27 @@ namespace LoginApp.Services
 
             if (user == null) return new AuthResponse<User>();
 
-            if (user.Email != request.Email) return new AuthResponse<User>();
-
             if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash)) return new AuthResponse<User>();
 
             SessionToken token = new SessionToken() { Token = CreateToken(user)};
             
             return new AuthResponse<User>() { Data = user, Token = token };
         }
+
+        public AuthResponse<RefreshTokenDto> RefreshToken(SessionToken token)
+        {
+            if (token.Token == null) return new AuthResponse<RefreshTokenDto>();
+
+            bool valid = CheckTokenIsValid(token.Token);
+
+            if (!valid) return new AuthResponse<RefreshTokenDto>() { Error = true } ;
+
+            var response = new RefreshTokenDto() { Valid = valid };
+            
+            return new AuthResponse<RefreshTokenDto>() { Data = response };
+        }
+
+
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim> 
@@ -77,5 +90,25 @@ namespace LoginApp.Services
             return jwt;
         }
 
+        private long GetTokenExpirationTime(string token)
+        {
+            var handler = new JwtSecurityTokenHandler();
+            var jwtSecurityToken = handler.ReadJwtToken(token);
+            var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals("exp")).Value;
+            var ticks= long.Parse(tokenExp);
+            return ticks;
+        }
+
+        private bool CheckTokenIsValid(string token)
+        {
+            var tokenTicks = GetTokenExpirationTime(token);
+            var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks).UtcDateTime;
+
+            var now = DateTime.Now.ToUniversalTime();
+
+            var valid = tokenDate >= now;
+
+            return valid;
+        }
     }
 }
