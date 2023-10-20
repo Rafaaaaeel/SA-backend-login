@@ -67,7 +67,6 @@ namespace LoginApp.Services
             return new AuthResponse<RefreshTokenDto>() { Data = response };
         }
 
-
         private string CreateToken(User user)
         {
             List<Claim> claims = new List<Claim> 
