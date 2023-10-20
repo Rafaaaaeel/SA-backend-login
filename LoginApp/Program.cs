@@ -1,11 +1,14 @@
-using System.Text;
 using LoginApp.Data;
+using LoginApp.Models;
 using LoginApp.Services;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
+using LoginApp.Settings;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDB"));
+
+builder.Services.AddSingleton<PreUserService>();
 
 builder.Services.AddControllers();
 
@@ -19,15 +22,6 @@ builder.Services.AddDbContext<UserContext>(opt => opt.UseSqlServer(builder.Confi
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(opt => {
-    opt.TokenValidationParameters = new TokenValidationParameters 
-    {
-        ValidateIssuerSigningKey = true,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings:Token").Value!)),
-        ValidateIssuer = false,
-        ValidateAudience = false
-    };
-});
 
 var app = builder.Build();
 
