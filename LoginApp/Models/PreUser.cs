@@ -3,7 +3,7 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace LoginApp.Models;
 
-public class TempUser 
+public class PreUser 
 {
 
     [BsonId]

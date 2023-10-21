@@ -6,7 +6,7 @@ namespace LoginApp.Settings;
 
 public class PreUserService 
 {
-    private readonly IMongoCollection<TempUser> _tempUserCollection;
+    private readonly IMongoCollection<PreUser> _tempUserCollection;
 
     public PreUserService(IOptions<MongoDBSettings> options)
     {
@@ -14,6 +14,6 @@ public class PreUserService
 
         IMongoDatabase database = client.GetDatabase(options.Value.DatabaseName);
 
-        _tempUserCollection = database.GetCollection<TempUser>(options.Value.CollectionName);
+        _tempUserCollection = database.GetCollection<PreUser>(options.Value.CollectionName);
     }
 }
