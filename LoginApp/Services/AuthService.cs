@@ -24,21 +24,19 @@ namespace LoginApp.Services
             _token = token;
         }
 
-        public async Task<AuthResponse<User>> Register(RegisterDto request)
+        public async Task<AuthResponse<PreUser>> Register(RegisterDto request)
         {
             var isUserAlreadyInUse = await _context.User.FirstOrDefaultAsync(u => u.Email == request.Email);
 
-            if (isUserAlreadyInUse != null) return new AuthResponse<User>();
+            if (isUserAlreadyInUse != null) return new AuthResponse<PreUser>() { Error = true, Message = "User Already exist", Code = 409 };
 
             var preUser = _mapper.Map<PreUser>(request);
 
             preUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password); 
 
-            await SavePreUser(preUser);
-
-            var user = _mapper.Map<User>(request);
+            var response = await SavePreUser(preUser);
             
-            return new AuthResponse<User>() { Data = user };
+            return response;
         }
 
         public async Task<AuthResponse<User>> Login(LoginDto request) 
@@ -67,9 +65,9 @@ namespace LoginApp.Services
             return new AuthResponse<RefreshTokenDto>() { Data = response };
         }
 
-        private async Task SavePreUser(PreUser request) 
+        private async Task<AuthResponse<PreUser>> SavePreUser(PreUser request) 
         {
-            await _mongo.CreatePreUser(request);
+            return await _mongo.CreatePreUser(request);
         }
     }
 

@@ -5,4 +5,5 @@ public class AuthResponse<T>
     public string? Message { get; set; }
     public Token? Token { get; set; }
     public bool? Error { get; set; }
+    public int? Code { get; set;}
 }

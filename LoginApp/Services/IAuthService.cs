@@ -5,7 +5,7 @@ namespace LoginApp.Services
 {
     public interface IAuthService 
     {
-        Task<AuthResponse<User>> Register(RegisterDto request);
+        Task<AuthResponse<PreUser>> Register(RegisterDto request);
         Task<AuthResponse<User>> Login(LoginDto request);
         AuthResponse<RefreshTokenDto> RefreshToken(Token token);
     }

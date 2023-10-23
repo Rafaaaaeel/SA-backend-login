@@ -22,9 +22,9 @@ namespace LoginApp.Controllers
         {
             var response = await _service.Register(request);
 
-            if (response.Data == null)
+            if (response.Error == true)
             {
-                return BadRequest();
+                return StatusCode(response.Code ?? 400, response);
             }
 
             return NoContent();
