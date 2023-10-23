@@ -9,6 +9,7 @@ namespace LoginApp.Profiles
         public UserProfile()
         {
             CreateMap<RegisterDto, User>();
+            CreateMap<RegisterDto, PreUser>();
         }
     }
 

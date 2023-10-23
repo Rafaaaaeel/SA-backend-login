@@ -29,15 +29,15 @@ namespace LoginApp.Services
             var isUserAlreadyInUse = await _context.User.FirstOrDefaultAsync(u => u.Email == request.Email);
 
             if (isUserAlreadyInUse != null) return new AuthResponse<User>();
-    
+
+            var preUser = _mapper.Map<PreUser>(request);
+
+            preUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password); 
+
+            await SavePreUser(preUser);
+
             var user = _mapper.Map<User>(request);
-
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password); 
-
-            await _context.User.AddAsync(user);
             
-            await _context.SaveChangesAsync();
-
             return new AuthResponse<User>() { Data = user };
         }
 
@@ -67,5 +67,10 @@ namespace LoginApp.Services
             return new AuthResponse<RefreshTokenDto>() { Data = response };
         }
 
+        private async Task SavePreUser(PreUser request) 
+        {
+            await _mongo.CreatePreUser(request);
+        }
     }
+
 }
