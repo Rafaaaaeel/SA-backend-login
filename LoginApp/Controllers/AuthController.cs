@@ -44,7 +44,7 @@ namespace LoginApp.Controllers
         }
 
         [HttpPost("token")]
-        public ActionResult<RefreshTokenDto> ValidateToken(SessionToken token)
+        public ActionResult<RefreshTokenDto> ValidateToken(Token token)
         {
             var response = _service.RefreshToken(token);
 

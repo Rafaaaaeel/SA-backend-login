@@ -1,14 +1,16 @@
 using LoginApp.Data;
 using LoginApp.Models;
 using LoginApp.Services;
-using LoginApp.Settings;
+using LoginApp.Utils;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection("MongoDB"));
 
-builder.Services.AddSingleton<PreUserService>();
+builder.Services.AddSingleton<MongoDBManager>();
+
+builder.Services.AddSingleton<ISessionToken, SessionToken>();
 
 builder.Services.AddControllers();
 

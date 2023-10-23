@@ -7,6 +7,6 @@ namespace LoginApp.Services
     {
         Task<AuthResponse<User>> Register(RegisterDto request);
         Task<AuthResponse<User>> Login(LoginDto request);
-        AuthResponse<RefreshTokenDto> RefreshToken(SessionToken token);
+        AuthResponse<RefreshTokenDto> RefreshToken(Token token);
     }
 }

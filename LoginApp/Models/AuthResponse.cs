@@ -1,10 +1,8 @@
-namespace LoginApp.Models
+namespace LoginApp.Models; 
+public class AuthResponse<T>
 {
-    public class AuthResponse<T>
-    {
-        public T? Data { get; set; }
-        public string? Message { get; set; }
-        public SessionToken? Token { get; set; }
-        public bool? Error { get; set; }
-    }
+    public T? Data { get; set; }
+    public string? Message { get; set; }
+    public Token? Token { get; set; }
+    public bool? Error { get; set; }
 }
