@@ -1,3 +1,4 @@
+using FluentEmail.Core;
 using LoginApp.Data;
 using LoginApp.Models;
 using LoginApp.Services;
@@ -24,6 +25,9 @@ builder.Services.AddDbContext<UserContext>(opt => opt.UseSqlServer(builder.Confi
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 

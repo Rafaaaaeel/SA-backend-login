@@ -43,6 +43,16 @@ namespace LoginApp.Controllers
             return Ok(response.Token);
         }
 
+        [HttpPost("confirm/{id}")]
+        public async Task<ActionResult> ConfirmUser(string id, [FromQuery] int token)
+        {
+            var response = await _service.ConfirmUser(id, token);
+
+            if (response.Error == true) return NotFound();
+
+            return Ok();
+        }
+
         [HttpPost("token")]
         public ActionResult<RefreshTokenDto> ValidateToken(Token token)
         {
@@ -52,12 +62,11 @@ namespace LoginApp.Controllers
 
             if (response.Error == true) 
             {
-                return StatusCode(410);
+                return StatusCode(response.Code ?? 400);
             }
 
             return Ok(response.Data);
         }
-
 
     }
 }

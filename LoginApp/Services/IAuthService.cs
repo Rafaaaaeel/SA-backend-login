@@ -8,5 +8,6 @@ namespace LoginApp.Services
         Task<AuthResponse<PreUser>> Register(RegisterDto request);
         Task<AuthResponse<User>> Login(LoginDto request);
         AuthResponse<RefreshTokenDto> RefreshToken(Token token);
+        Task<AuthResponse<PreUser>> ConfirmUser(string id, int token);
     }
 }

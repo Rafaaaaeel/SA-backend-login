@@ -1,4 +1,5 @@
 using AutoMapper;
+using FluentEmail.Core;
 using LoginApp.Data;
 using LoginApp.Dtos;
 using LoginApp.Models;
@@ -15,13 +16,15 @@ namespace LoginApp.Services
         private readonly IMapper _mapper;
         private readonly MongoDBManager _mongo;
         private readonly ISessionToken _token;
+        private readonly IEmailSender _email;
 
-        public AuthService(UserContext context, IMapper mapper, MongoDBManager mongo, ISessionToken token)
+        public AuthService(UserContext context, IMapper mapper, MongoDBManager mongo, ISessionToken token, IEmailSender email)
         {
             _context = context;
             _mapper = mapper;
             _mongo = mongo;
             _token = token;
+            _email = email;
         }
 
         public async Task<AuthResponse<PreUser>> Register(RegisterDto request)
@@ -36,6 +39,8 @@ namespace LoginApp.Services
 
             var response = await SavePreUser(preUser);
             
+            SendEmail(preUser);
+
             return response;
         }
 
@@ -58,17 +63,43 @@ namespace LoginApp.Services
 
             bool valid = _token.CheckTokenIsValid(token.Value);
 
-            if (!valid) return new AuthResponse<RefreshTokenDto>() { Error = true } ;
+            if (!valid) return new AuthResponse<RefreshTokenDto>() { Error = true, Code = 410 } ;
 
             var response = new RefreshTokenDto() { Valid = valid };
             
             return new AuthResponse<RefreshTokenDto>() { Data = response };
         }
 
+        public async Task<AuthResponse<PreUser>> ConfirmUser(string id, int token)
+        {
+            var response = await _mongo.DeleteUser(id, token);
+
+            if (response.Error == true || response.Data == null) return response;
+        
+            var data = _mapper.Map<RegisterDto>(response.Data);
+
+            var user = _mapper.Map<User>(data);
+
+            user.PasswordHash = response.Data.PasswordHash;
+
+            await _context.User.AddAsync(user);
+
+            await _context.SaveChangesAsync();
+
+            return response;
+        }
+
         private async Task<AuthResponse<PreUser>> SavePreUser(PreUser request) 
         {
             return await _mongo.CreatePreUser(request);
         }
+
+        private void SendEmail(PreUser user)
+        {
+            Mail request = new Mail() { ToEmail = user.Email, Body = $"<a href='http://localhost:5124/api/Auth/confirm/{user.Id}'> Test {user.Token} <a/>", Subject = $"Account confirmation SA"};
+            _email.SendEmail(request);
+        }
+
     }
 
 }

@@ -20,7 +20,7 @@ public class MongoDBManager
     
     public async Task<AuthResponse<PreUser>> CreatePreUser(PreUser request)
     {
-        var user = await GetDataFromQuery(query: "Email", value: request.Email);
+        var user = await GetDataFromQuery(query: "Email", value: (string) request.Email);
 
         if (user.Count != 0) return new AuthResponse<PreUser>() { Error = true, Message = "Confirm your e-mail", Code = 403 };
         
@@ -29,7 +29,24 @@ public class MongoDBManager
         return new AuthResponse<PreUser>() { Error = false };
     }
 
-    private async Task<ICollection<PreUser>> GetDataFromQuery(string query, string value) 
+    public async Task<AuthResponse<PreUser>> DeleteUser(string id, int token)
+    {
+        var data = await _collection.FindAsync(d => d.Id == id);
+
+        if (data == null) return new AuthResponse<PreUser>() { Error = true, Code = 404 };
+        
+        var user = data.FirstOrDefault();
+
+        if (user.Token != token) return new AuthResponse<PreUser>() { Error = true, Code = 400 };
+
+        var filter = Builders<PreUser>.Filter.Eq(u => u.Id, id);
+            
+        await _collection.DeleteOneAsync(filter);
+
+        return new AuthResponse<PreUser>() { Data = user };
+    }
+
+    private async Task<ICollection<PreUser>> GetDataFromQuery<T>(string query, T value) 
     {
         FilterDefinition<PreUser> filter = Builders<PreUser>.Filter.Eq(query, value);
         
