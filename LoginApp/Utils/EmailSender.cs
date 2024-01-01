@@ -1,4 +1,3 @@
-using System.Reflection;
 using LoginApp.Models;
 using MailKit.Security;
 using Microsoft.Extensions.Options;
