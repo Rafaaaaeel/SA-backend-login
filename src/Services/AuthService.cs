@@ -1,5 +1,4 @@
 using AutoMapper;
-using FluentEmail.Core;
 using LoginApp.Data;
 using LoginApp.Dtos;
 using LoginApp.Models;

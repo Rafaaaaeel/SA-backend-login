@@ -1,4 +1,3 @@
-using FluentEmail.Core;
 using LoginApp.Data;
 using LoginApp.Models;
 using LoginApp.Services;
@@ -13,13 +12,13 @@ builder.Services.AddSingleton<MongoDBManager>();
 
 builder.Services.AddSingleton<ISessionToken, SessionToken>();
 
+builder.Services.AddScoped<IAuthService, AuthService>();
+
 builder.Services.AddControllers();
 
 builder.Services.AddEndpointsApiExplorer();
 
 builder.Services.AddSwaggerGen();
-
-builder.Services.AddScoped<IAuthService, AuthService>();
 
 builder.Services.AddDbContext<UserContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
