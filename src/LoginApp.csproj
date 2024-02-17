@@ -1,21 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
 
-    <PackageReference Include="Sa.Api.Core" Version="1.0.0" />
+    <PackageReference Include="Sa.Api.Core" Version="1.0.7" />
 
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <PackageReference Include="MongoDB.Bson" Version="2.22.0" />
-    <PackageReference Include="MongoDB.Driver" Version="2.22.0" />
-    <PackageReference Include="MongoDB.Driver.Core" Version="2.22.0" />
-    <PackageReference Include="Swashbuckle.AspNetCore" Version="6.5.0" />
-    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.2" />
+    <!-- <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.2" /> -->
     <PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
     <PackageReference Include="MailKit" Version="4.2.0" />
   </ItemGroup>

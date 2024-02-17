@@ -1,10 +1,3 @@
-using System.Security.Claims;
-using Microsoft.IdentityModel.Tokens;
-using System.Text;
-using System.IdentityModel.Tokens.Jwt;
-using LoginApp.Models;
-using Microsoft.Extensions.ObjectPool;
-
 namespace LoginApp.Utils;
 
 public class SessionToken : ISessionToken
@@ -18,18 +11,15 @@ public class SessionToken : ISessionToken
 
     public string CreateToken(User user)
     {
-        List<Claim> claims = new List<Claim> 
-        {
-            new Claim(ClaimTypes.Email, user.Email)
-        };
+        List<Claim> claims = [new(ClaimTypes.Email, user.Email)];
 
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!));
+        SymmetricSecurityKey key = new(Encoding.UTF8.GetBytes(_configuration.GetSection("AppSettings:Token").Value!));
 
-        var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
+        SigningCredentials creds = new(key, SecurityAlgorithms.HmacSha512Signature);
 
-        var token = new JwtSecurityToken(
+        JwtSecurityToken token = new(
             claims: claims,
-            expires: DateTime.Now.AddDays(1),
+            expires: DateTime.Now.AddMonths(1),
             signingCredentials: creds
         );
 
@@ -42,20 +32,18 @@ public class SessionToken : ISessionToken
     {
         var tokenTicks = GetTokenExpirationTime(token);
         var tokenDate = DateTimeOffset.FromUnixTimeSeconds(tokenTicks).UtcDateTime;
-
         var now = DateTime.Now.ToUniversalTime();
-
         var valid = tokenDate >= now;
 
         return valid;
     }
 
-    private long GetTokenExpirationTime(string token)
+    private static long GetTokenExpirationTime(string token)
     {
-        var handler = new JwtSecurityTokenHandler();
-        var jwtSecurityToken = handler.ReadJwtToken(token);
+        JwtSecurityTokenHandler handler = new();
+        JwtSecurityToken jwtSecurityToken = handler.ReadJwtToken(token);
         var tokenExp = jwtSecurityToken.Claims.First(claim => claim.Type.Equals("exp")).Value;
-        var ticks= long.Parse(tokenExp);
+        var ticks = long.Parse(tokenExp);
         return ticks;
     }
 }
