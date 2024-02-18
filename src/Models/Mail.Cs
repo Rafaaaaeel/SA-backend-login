@@ -1,4 +1,4 @@
-namespace LoginApp.Models;
+namespace Sa.Login.Api.Models;
 
 public class Mail
 {

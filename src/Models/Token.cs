@@ -1,7 +1,6 @@
-namespace LoginApp.Models
+namespace Sa.Login.Api.Models;
+
+public class Token
 {
-    public class Token
-    {
-        public string? Value { get; set; }
-    }
+    public string? Value { get; set; }
 }

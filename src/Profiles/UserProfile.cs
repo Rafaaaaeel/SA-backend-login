@@ -1,17 +1,10 @@
-using AutoMapper;
-using LoginApp.Dtos;
-using LoginApp.Models;
-
-namespace LoginApp.Profiles
+namespace Sa.Login.Api.Profiles;
+public class UserProfile : Profile
 {
-    public class UserProfile : Profile
+    public UserProfile()
     {
-        public UserProfile()
-        {
-            CreateMap<RegisterDto, User>();
-            CreateMap<RegisterDto, PreUser>();
-            CreateMap<PreUser, RegisterDto>();
-        }
+        CreateMap<RegisterRequest, PreUser>();
+        CreateMap<PreUser, RegisterRequest>();
+        CreateMap<PreUser, User>();
     }
-
 }

@@ -12,7 +12,7 @@ public static class DependencyResolver
 
     public static IServiceCollection AddContexts<T>(this IServiceCollection services, T appSettings) where T : AppSettings
     {
-        services.AddDbContext<UserContext>(opt => opt.UseSqlServer(appSettings.Sql.ConnectionString));
+        services.AddDbContext<UserContext>(opt => opt.UseSqlServer(appSettings.SqlConfiguration.ConnectionString));
         return services;
     }
 

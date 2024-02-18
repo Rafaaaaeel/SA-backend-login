@@ -1,8 +1,6 @@
-namespace LoginApp.Models;
-
+namespace Sa.Login.Api.Models;
 public class PreUser 
 {
-    public string? Id { get; set; }
     public required string Username { get; set; }
     public required string Email { get; set; }
     public required string PasswordHash { get; set; }

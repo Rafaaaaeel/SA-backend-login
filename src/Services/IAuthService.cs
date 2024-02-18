@@ -1,10 +1,9 @@
-namespace LoginApp.Services 
+namespace Sa.Login.Api.Interfaces;
+
+public interface IAuthService 
 {
-    public interface IAuthService 
-    {
-        Task<AuthResponse<PreUser>> Register(RegisterDto request);
-        Task<Token> Login(LoginRequest request);
-        AuthResponse<RefreshTokenDto> RefreshToken(Token token);
-        Task<AuthResponse<PreUser>> ConfirmUser(string id, int token);
-    }
+    Task Register(RegisterRequest request);
+    Task<Token> Login(LoginRequest request);
+    RefreshTokenResponse RefreshToken(Token token);
+    Task Confirm(int token);
 }

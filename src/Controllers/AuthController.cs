@@ -12,14 +12,9 @@ public class AuthController : ControllerBase
     }
 
     [HttpPost("register")]
-    public async Task<ActionResult> Register(RegisterDto request)
+    public async Task<ActionResult> Register(RegisterRequest request)
     {
-        var response = await _service.Register(request);
-
-        if (response.Error == true)
-        {
-            return StatusCode(response.Code ?? 400, response);
-        }
+        await _service.Register(request);
 
         return NoContent();
     }
@@ -32,29 +27,20 @@ public class AuthController : ControllerBase
         return Ok(response);
     }
 
-    [HttpPost("confirm/{id}")]
-    public async Task<ActionResult> ConfirmUser(string id, [FromQuery] int token)
+    [HttpPost("confirm/{token}")]
+    public async Task<ActionResult> ConfirmUser([FromRoute] int token)
     {
-        var response = await _service.ConfirmUser(id, token);
-
-        if (response.Error == true) return NotFound();
+        await _service.Confirm(token);
 
         return Ok();
     }
 
     [HttpPost("token")]
-    public ActionResult<RefreshTokenDto> ValidateToken(Token token)
+    public ActionResult<RefreshTokenResponse> ValidateToken(Token token)
     {
-        var response = _service.RefreshToken(token);
+        RefreshTokenResponse response = _service.RefreshToken(token);
 
-        if (response == null) return BadRequest();
-
-        if (response.Error == true) 
-        {
-            return StatusCode(response.Code ?? 400);
-        }
-
-        return Ok(response.Data);
+        return Ok(response);
     }
 
 }

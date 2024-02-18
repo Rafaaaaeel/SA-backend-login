@@ -15,6 +15,7 @@ public class Startup(IWebHostEnvironment env)
         services.AddRepositoresDependencyInjection();   
         services.AddDefaultServices(_appSettings);
         services.AddContexts(_appSettings);
+        services.AddDefaultDependencies(_appSettings);
         services.AddRedisCache(_appSettings);
         // services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
     }

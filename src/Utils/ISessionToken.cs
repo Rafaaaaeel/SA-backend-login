@@ -1,5 +1,3 @@
-using LoginApp.Models;
-
 namespace LoginApp.Utils;
 
 public interface ISessionToken 

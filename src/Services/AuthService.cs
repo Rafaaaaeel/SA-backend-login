@@ -5,37 +5,30 @@ public class AuthService : IAuthService
     private readonly UserContext _context;
     private readonly IMapper _mapper;
     private readonly ISessionToken _token;
-    private readonly IEmailSender _email;
+    private readonly IClientCache _redis;
 
-    public AuthService(UserContext context, IMapper mapper, ISessionToken token, IEmailSender email)
+    public AuthService(UserContext context, IMapper mapper, ISessionToken token, IClientCache redis)
     {
         _context = context;
         _mapper = mapper;
         _token = token;
-        _email = email;
+        _redis = redis;
     }
 
-    // Ajustar para funcionar com Redis
-    public async Task<AuthResponse<PreUser>> Register(RegisterDto request)
+    public async Task Register(RegisterRequest request)
     {
-        var isUserAlreadyInUse = await _context.User.FirstOrDefaultAsync(u => u.Email == request.Email);
-
-        if (isUserAlreadyInUse != null) return new AuthResponse<PreUser>() { Error = true, Message = "User Already exist", Code = 409 };
+        if (await _context.QueryUserByEmail(request.Email) is not null) throw new ConflictException();
 
         var preUser = _mapper.Map<PreUser>(request);
 
         preUser.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password); 
 
-        // var response = await SavePreUser(preUser);
-        
-        SendEmail(preUser);
-
-        return new AuthResponse<PreUser>();
+        await _redis.AsyncSetCacheObject(preUser.Token.ToString(), preUser);
     }
 
     public async Task<Token> Login(LoginRequest request) 
     {
-        User? user = await _context.QueryUserByEmail(request.Email) ?? throw new ArgumentException();
+        User user = await _context.QueryUserByEmail(request.Email) ?? throw new NotFoundException();
 
         if (!BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash)) throw new UnathorizedException();
 
@@ -44,28 +37,26 @@ public class AuthService : IAuthService
         return token;
     }
 
-    public AuthResponse<RefreshTokenDto> RefreshToken(Token token)
+    public RefreshTokenResponse RefreshToken(Token token)
     {
-        if (token.Value == null) return new AuthResponse<RefreshTokenDto>();
+        if (token.Value is null) throw new NotFoundException();
 
         bool valid = _token.CheckTokenIsValid(token.Value);
 
-        if (!valid) return new AuthResponse<RefreshTokenDto>() { Error = true, Code = 410 } ;
+        if (!valid) throw new GoneException();
 
-        var response = new RefreshTokenDto() { Valid = valid };
-        
-        return new AuthResponse<RefreshTokenDto>() { Data = response };
+        return new RefreshTokenResponse() { Valid = valid };
     }
 
-    public async Task<AuthResponse<PreUser>> ConfirmUser(string id, int token)
+    public async Task Confirm(int token)
     {
-        return new AuthResponse<PreUser>();
-    }
+        PreUser preUser = await _redis.AsyncGetCachedObject<PreUser>(token.ToString());
 
-    private void SendEmail(PreUser user)
-    {
-        Mail request = new() { ToEmail = user.Email, Body = $"<a href='http://localhost:5124/api/Auth/confirm/{user.Id}'> Test {user.Token} <a/>", Subject = $"Account confirmation SA"};
-        _email.SendEmail(request);
+        User user = _mapper.Map<User>(preUser);
+
+        _context.Add(user);
+
+        await _context.SaveChangesAsync();
     }
 
 }
