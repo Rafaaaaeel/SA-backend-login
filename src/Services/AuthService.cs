@@ -37,17 +37,6 @@ public class AuthService : IAuthService
         return token;
     }
 
-    public RefreshTokenResponse RefreshToken(Token token)
-    {
-        if (token.Value is null) throw new NotFoundException();
-
-        bool valid = _token.CheckTokenIsValid(token.Value);
-
-        if (!valid) throw new GoneException();
-
-        return new RefreshTokenResponse() { Valid = valid };
-    }
-
     public async Task Confirm(int token)
     {
         PreUser preUser = await _redis.AsyncGetCachedObject<PreUser>(token.ToString());
@@ -57,6 +46,17 @@ public class AuthService : IAuthService
         _context.Add(user);
 
         await _context.SaveChangesAsync();
+    }
+
+    public RefreshTokenResponse RefreshToken(Token token)
+    {
+        if (token.Value is null) throw new NotFoundException();
+
+        bool valid = _token.CheckTokenIsValid(token.Value);
+
+        if (!valid) throw new GoneException();
+
+        return new RefreshTokenResponse() { Valid = valid };
     }
 
 }
