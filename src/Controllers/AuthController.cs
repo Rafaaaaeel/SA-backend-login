@@ -1,25 +1,42 @@
+using System.Net;
+
 namespace Sa.Login.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AuthController : ControllerBase
+public class AutheticationController : ControllerBase
 {
     private readonly IAuthService _service;
 
-    public AuthController(IAuthService service)
+    public AutheticationController(IAuthService service)
     {
         _service = service;
     }
 
+    /// <summary>
+    /// Register an user at Redis cache before it confirms its emails by token
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("register")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
+    [ProducesResponseType(StatusCodes.Status409Conflict)]
     public async Task<ActionResult> Register(RegisterRequest request)
     {
         await _service.Register(request);
 
-        return NoContent();
+        return Created();
     }
 
+    /// <summary>
+    /// Process login and generate session token
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("login")]
+    [ProducesResponseType(typeof(Token), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
     public async Task<ActionResult<Token>> Login(LoginRequest request)
     {
         Token response = await _service.Login(request);
@@ -27,15 +44,28 @@ public class AuthController : ControllerBase
         return Ok(response);
     }
 
+    /// <summary>
+    /// It'll confirm user and effetive save him on database of users
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     [HttpPost("confirm/{token}")]
+    [ProducesResponseType(StatusCodes.Status201Created)]
     public async Task<ActionResult> ConfirmUser([FromRoute] int token)
     {
         await _service.Confirm(token);
 
-        return Ok();
+        return Created();
     }
 
+    /// <summary>
+    /// Checks token status
+    /// </summary>
+    /// <param name="token"></param>
+    /// <returns></returns>
     [HttpPost("token")]
+    [ProducesResponseType(typeof(RefreshTokenResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status410Gone)]
     public ActionResult<RefreshTokenResponse> ValidateToken(Token token)
     {
         RefreshTokenResponse response = _service.RefreshToken(token);
