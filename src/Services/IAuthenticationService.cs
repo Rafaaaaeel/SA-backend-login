@@ -1,6 +1,6 @@
 namespace Sa.Login.Api.Interfaces;
 
-public interface IAuthService 
+public interface IAuthenticationService 
 {
     Task Register(RegisterRequest request);
     Task<Token> Login(LoginRequest request);

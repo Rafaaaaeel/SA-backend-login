@@ -4,11 +4,11 @@ namespace Sa.Login.Api.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class AutheticationController : ControllerBase
+public class AuthenticationController : ControllerBase
 {
-    private readonly IAuthService _service;
+    private readonly IAuthenticationService _service;
 
-    public AutheticationController(IAuthService service)
+    public AuthenticationController(IAuthenticationService service)
     {
         _service = service;
     }

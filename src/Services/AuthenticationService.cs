@@ -1,13 +1,13 @@
 namespace Sa.Login.Api.Repositories;
 
-public class AuthService : IAuthService
+public class AuthenticationService : IAuthenticationService
 {
     private readonly UserContext _context;
     private readonly IMapper _mapper;
     private readonly ISessionToken _token;
     private readonly IClientCache _redis;
 
-    public AuthService(UserContext context, IMapper mapper, ISessionToken token, IClientCache redis)
+    public AuthenticationService(UserContext context, IMapper mapper, ISessionToken token, IClientCache redis)
     {
         _context = context;
         _mapper = mapper;

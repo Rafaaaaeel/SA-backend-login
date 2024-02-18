@@ -5,6 +5,7 @@ global using System.IdentityModel.Tokens.Jwt;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.IdentityModel.Tokens;
 global using Microsoft.EntityFrameworkCore;
+
 global using LoginApp.Utils;
 
 global using Sa.Login.Api.Models;

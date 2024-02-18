@@ -5,7 +5,7 @@ public static class DependencyResolver
     public static IServiceCollection AddRepositoresDependencyInjection(this IServiceCollection services) 
     {
         services.AddSingleton<ISessionToken, SessionToken>();
-        services.AddScoped<IAuthService, AuthService>();
+        services.AddScoped<IAuthenticationService, AuthenticationService>();
         services.AddTransient<IEmailSender, EmailSender>();
         return services;
     }
