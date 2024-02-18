@@ -1,9 +1,7 @@
-using System.Net;
-
 namespace Sa.Login.Api.Controllers;
 
-[Route("api/[controller]")]
 [ApiController]
+[Route("api/v1/[controller]")]
 public class AuthenticationController : ControllerBase
 {
     private readonly IAuthenticationService _service;
@@ -51,7 +49,7 @@ public class AuthenticationController : ControllerBase
     /// <returns></returns>
     [HttpPost("confirm/{token}")]
     [ProducesResponseType(StatusCodes.Status201Created)]
-    public async Task<ActionResult> ConfirmUser([FromRoute] int token)
+    public async Task<ActionResult> Confirm([FromRoute] int token)
     {
         await _service.Confirm(token);
 
