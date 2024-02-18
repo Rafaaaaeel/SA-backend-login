@@ -17,7 +17,6 @@ public class Startup(IWebHostEnvironment env)
         services.AddContexts(_appSettings);
         services.AddDefaultDependencies(_appSettings);
         services.AddRedisCache(_appSettings);
-        // services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
     }
 
     public void Configure(IApplicationBuilder app)
