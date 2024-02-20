@@ -3,9 +3,10 @@ using Sa.Login.Api.IoC;
 
 namespace Sa.Login.Api;
 
-public class Startup(IWebHostEnvironment env)
+public class Startup(IWebHostEnvironment env, IConfiguration configuration)
 {
     private readonly StartupManager _startupManager = new(env);
+
     private AppSettings _appSettings;
 
     public virtual void ConfigureServices(IServiceCollection services)

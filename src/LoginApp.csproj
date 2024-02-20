@@ -1,17 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>E40C7CAE-5CBE-4E2F-B04E-5F3D27C25B29</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
 
-    <PackageReference Include="Sa.Api.Core" Version="1.0.9" />
+    <PackageReference Include="Sa.Api.Core" Version="1.0.13" />
 
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.3" />
-    <!-- <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.0.2" /> -->
     <PackageReference Include="FluentEmail.Smtp" Version="3.0.2" />
     <PackageReference Include="MailKit" Version="4.2.0" />
   </ItemGroup>
